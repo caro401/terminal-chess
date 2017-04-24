@@ -30,6 +30,10 @@ _ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n\
             axes_board += f'_ _ _ _ _ _ _ _ {i}\n'
         self.assertEqual(self.test_board.render_board(), axes_board)
 
-
+    def test_move_parser(self):
+        self.assertIsNone(self.test_board.parse_move('z9 b3'))
+        self.assertIsNone(self.test_board.parse_move('do a move now'))
+        self.assertEqual(self.test_board.parse_move('a3 a4'), ((2, 0), (3, 0)))
+        self.assertEqual(self.test_board.parse_move('f2 e4'), ((1, 5), (3, 4)))
 if __name__ == '__main__':
     unittest.main()

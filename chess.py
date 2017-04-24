@@ -1,3 +1,7 @@
+WKING, WQUEEN, WROOK, WBISHOP, WKNIGHT, WPAWN = '♔', '♕', '♖', '♗', '♘', '♙'
+BKING, BQUEEN, BROOK, BBISHOP, BKNIGHT, BPAWN = '♚', '♛', '♜', '♝', '♞', '♟'
+
+
 def render_board(pieces_array=None):
     if not pieces_array:
         return '_ _ _ _ _ _ _ _\n' * 8

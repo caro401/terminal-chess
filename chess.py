@@ -4,12 +4,9 @@ import copy
 
 WK, WQ, WR, WB, WN, WP = '♔', '♕', '♖', '♗', '♘', '♙'
 BK, BQ, BR, BB, BN, BP = '♚', '♛', '♜', '♝', '♞', '♟'
-BLACK_PIECES = frozenset([BK, BQ, BR, BB, BN, BP])
-WHITE_PIECES = frozenset([WK, WQ, WR, WB, WN, WP])
 MOVES_MAP = {WP: moves.white_pawn_move, BP: moves.black_pawn_move, BR: moves.rook_move, WR: moves.rook_move,
              WB: moves.bishop_move, BB: moves.bishop_move, WQ: moves.queen_move, BQ: moves.queen_move,
              WN: moves.knight_move, BN: moves.knight_move, WK: moves.king_move, BK: moves.king_move}
-
 
 
 class Board:
@@ -24,8 +21,12 @@ class Board:
             move = self.parse_move(move_str)
             if move:
                 origin, target = move
-                self.board[target[0]][target[1]], self.board[origin[0]][origin[1]] =\
-                    self.board[origin[0]][origin[1]], None
+                valid_moves = self.get_valid_moves(origin[0], origin[1])
+                if target in valid_moves:
+                    self.board[target[0]][target[1]], self.board[origin[0]][origin[1]] =\
+                        self.board[origin[0]][origin[1]], None
+                else:
+                    print('You can\'t move that piece to there')
         else:
             print('No move made')
         print(self.render_board())
@@ -43,11 +44,14 @@ class Board:
         return (int(origin[1]) - 1, cols_map[origin[0]]), (int(target[1]) - 1, cols_map[target[0]])
 
     def display_valid_moves(self, row, col):
-        moves_set = MOVES_MAP[self.board[row][col]]((row, col))
+        moves_set = self.get_valid_moves(row, col)
         show = copy.deepcopy(self.board)
         for location in moves_set:
             show[location[0]][location[1]] = 'x'
         print(self.render_board(show))
+
+    def get_valid_moves(self, row, col):
+        return MOVES_MAP[self.board[row][col]]((row, col), self.board)
 
     def render_board(self, board=None):
         # draw board as a string, given array of pieces
@@ -69,7 +73,8 @@ class Board:
 
 
 if __name__ == '__main__':
-    print('\tPlay chess! Type your moves as "a2 a4" - move piece on a2 to a4\n\tType "quit" to stop\n\
+    print('\tPlay chess! Type your moves as "a2 a4" - move piece on a2 to a4\n\
+    \tor query where you can move with "a2?"\n\tType "quit" to stop\n\
 \tThere are no rules enforced yet!')
     gameboard = Board(True)
     move = None

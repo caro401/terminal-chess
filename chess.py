@@ -1,9 +1,15 @@
 import re
+import moves
+import copy
 
 WK, WQ, WR, WB, WN, WP = '♔', '♕', '♖', '♗', '♘', '♙'
 BK, BQ, BR, BB, BN, BP = '♚', '♛', '♜', '♝', '♞', '♟'
-black_pieces = frozenset([BK, BQ, BR, BB, BN, BP])
-white_pieces = frozenset([WK, WQ, WR, WB, WN, WP])
+BLACK_PIECES = frozenset([BK, BQ, BR, BB, BN, BP])
+WHITE_PIECES = frozenset([WK, WQ, WR, WB, WN, WP])
+MOVES_MAP = {WP: moves.white_pawn_move, BP: moves.black_pawn_move, BR: moves.rook_move, WR: moves.rook_move,
+             WB: moves.bishop_move, BB: moves.bishop_move, WQ: moves.queen_move, BQ: moves.queen_move,
+             WN: moves.knight_move, BN: moves.knight_move, WK: moves.king_move, BK: moves.king_move}
+
 
 
 class Board:
@@ -15,31 +21,43 @@ class Board:
     def update_board(self, move_str=None):
         # given a user's move, update the game board
         if move_str:
-            if self.parse_move(move_str):
-                origin, target = self.parse_move(move_str)
+            move = self.parse_move(move_str)
+            if move:
+                origin, target = move
                 self.board[target[0]][target[1]], self.board[origin[0]][origin[1]] =\
                     self.board[origin[0]][origin[1]], None
         else:
             print('No move made')
         print(self.render_board())
 
-    @staticmethod
-    def parse_move(move_str):  
+    def parse_move(self, move_str):
         # expect move in form 'a8 a4' - move piece on grid ref a8 to a4
         cols_map = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
         if not re.match(r'[a-h][1-8] [a-h][1-8]', move_str):
-            print('Invalid move command, please try again')
+            if re.match(r'[a-h][1-8]\?', move_str):
+                self.display_valid_moves(int(move_str[1]) - 1, cols_map[move_str[0]])
+            else:
+                print('Invalid move command, please try again')
             return None
         origin, target = move_str.split(' ')
         return (int(origin[1]) - 1, cols_map[origin[0]]), (int(target[1]) - 1, cols_map[target[0]])
 
-    def render_board(self):
+    def display_valid_moves(self, row, col):
+        moves_set = MOVES_MAP[self.board[row][col]]((row, col))
+        show = copy.deepcopy(self.board)
+        for location in moves_set:
+            show[location[0]][location[1]] = 'x'
+        print(self.render_board(show))
+
+    def render_board(self, board=None):
         # draw board as a string, given array of pieces
+        if not board:
+            board = self.board
         board_str = ''
         if self.axes:
             board_str += 'a b c d e f g h  \n'
         for i in range(7, -1, -1):
-            for piece in self.board[i]:
+            for piece in board[i]:
                 if piece:
                     board_str += f'{piece} '
                 else:

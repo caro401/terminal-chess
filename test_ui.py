@@ -35,5 +35,7 @@ _ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n\
         self.assertIsNone(self.test_board.parse_move('do a move now'))
         self.assertEqual(self.test_board.parse_move('a3 a4'), ((2, 0), (3, 0)))
         self.assertEqual(self.test_board.parse_move('f2 e4'), ((1, 5), (3, 4)))
+
+
 if __name__ == '__main__':
     unittest.main()

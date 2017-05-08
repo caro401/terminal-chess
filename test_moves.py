@@ -112,5 +112,26 @@ class TestRookMoves(unittest.TestCase):
         self.assertEqual(self.test_board.get_valid_moves(0, 0), {(1, 0), (2, 0), (0, 1), (0, 2)})
 
 
+class TestQueenMoves(unittest.TestCase):
+    def setUp(self):
+        self.test_board = chess.Board(False)
+        self.test_board.board = [[WR, None, None, None, WK, WB, None, WR], [None, WP, WP, WP, None, None, WP, WP],
+                                 [BN, None, BP, None, None, WP, None, WN],
+                                 [WP, None, WN, WQ, None, None, None, None],
+                                 [WB, None, None, None, WP, None, BP, None],
+                                 [None, None, BQ, BP, None, None, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, None, BK, BB, None, BR]]
+        # print(self.test_board.render_board())
+
+    def test_black_queen(self):
+        self.assertEqual(self.test_board.get_valid_moves(5, 2),
+                         {(5, 1), (5, 0), (6, 2), (6, 3), (4, 3), (3, 4), (2, 5), (4, 2), (3, 2), (4, 1), (3, 0)})
+
+    def test_white_queen(self):
+        self.assertEqual(self.test_board.get_valid_moves(3, 3),
+                         {(4, 2), (5, 1), (6, 0), (4, 3), (5, 3), (3, 4), (3, 5),
+                          (3, 6), (3, 7), (2, 4), (1, 5), (0, 6), (2, 3), (2, 2)})
+
+
 if __name__ == '__main__':
     unittest.main()

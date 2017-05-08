@@ -93,5 +93,24 @@ class TestBishopMoves(unittest.TestCase):
         self.assertEqual(self.test_board.get_valid_moves(4, 3), {(5, 2), (5, 4), (3, 2), (3, 4), (2, 5)})
 
 
+class TestRookMoves(unittest.TestCase):
+    def setUp(self):
+        self.test_board = chess.Board(False)
+        self.test_board.board = [[WR, None, None, WQ, WK, WB, None, WR], [None, WP, WP, WP, None, None, WP, WP],
+                                 [BN, None, BP, None, None, WP, None, WN],
+                                 [WP, None, WN, None, None, None, None, None],
+                                 [WB, None, None, BR, WP, None, BP, None],
+                                 [None, None, None, BP, None, None, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, BQ, BK, BB, None, None]]
+        # print(self.test_board.render_board())
+
+    def test_black_rook(self):
+        self.assertEqual(self.test_board.get_valid_moves(4, 3),
+                         {(4, 2), (4, 1), (4, 0), (4, 4), (3, 3), (2, 3), (1, 3)})
+
+    def test_white_rook(self):
+        self.assertEqual(self.test_board.get_valid_moves(0, 0), {(1, 0), (2, 0), (0, 1), (0, 2)})
+
+
 if __name__ == '__main__':
     unittest.main()

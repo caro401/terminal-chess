@@ -1,16 +1,13 @@
 # get all the squares on a board a piece of that type at that location could move to, discounting other pieces on board
-WK, WQ, WR, WB, WN, WP = '♔', '♕', '♖', '♗', '♘', '♙'
-BK, BQ, BR, BB, BN, BP = '♚', '♛', '♜', '♝', '♞', '♟'
-BLACK_PIECES = frozenset([BK, BQ, BR, BB, BN, BP])
-WHITE_PIECES = frozenset([WK, WQ, WR, WB, WN, WP])
 
-# TODO custom type for valid
+from typing import Set, FrozenSet
+from glb import *
 
 
-def white_pawn_move(location: tuple, board: list)-> set:
+def white_pawn_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO en passant
-    moves_set: set = set()
-    pos: tuple = (location[0] + 1, location[1])
+    moves_set: Set[Coordinates] = set()
+    pos: Coordinates = (location[0] + 1, location[1])
     if valid(board, pos, WHITE_PIECES)[0] and (not valid(board, pos, WHITE_PIECES)[1]):
         moves_set.add(pos)
         pos = (location[0] + 2, location[1])
@@ -25,10 +22,10 @@ def white_pawn_move(location: tuple, board: list)-> set:
     return moves_set
 
 
-def black_pawn_move(location: tuple, board: list) -> set:
+def black_pawn_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO en passant
-    moves_set: set = set()
-    pos: tuple = (location[0] - 1, location[1])
+    moves_set: Set[Coordinates] = set()
+    pos: Coordinates = (location[0] - 1, location[1])
     if valid(board, pos, BLACK_PIECES)[0] and (not valid(board, pos, BLACK_PIECES)[1]):
         moves_set.add(pos)
         pos = (location[0] - 2, location[1])
@@ -43,9 +40,9 @@ def black_pawn_move(location: tuple, board: list) -> set:
     return moves_set
 
 
-def knight_move(location: tuple, board: list) -> set:
-    moves_set: set = set()
-    own_pieces: set = get_own_pieces(location, board)
+def knight_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
+    moves_set: Set[Coordinates] = set()
+    own_pieces: Set[str] = get_own_pieces(location, board)
     for i in ((1, 2), (2, 1)):
         for j in [(x * i[0], y * i[1]) for x in [1, -1] for y in [1, -1]]:
             pos: tuple = add_tuples(j, location)
@@ -54,30 +51,30 @@ def knight_move(location: tuple, board: list) -> set:
     return moves_set
 
 
-def rook_move(location: tuple, board: list) -> set:
+def rook_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO castling
     return move_all_directions(location, board, [(1, 0), (-1, 0), (0, 1), (0, -1)])
 
 
-def bishop_move(location: tuple, board: list) -> set:
+def bishop_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     return move_all_directions(location, board, [(x, y) for x in [1, -1] for y in [1, -1]])
 
 
-def queen_move(location: tuple, board: list) -> set:
+def queen_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     return bishop_move(location, board).union(rook_move(location, board))
 
 
-def king_move(location: tuple, board: list) -> set:
+def king_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO check
     # TODO castling
     return move_all_directions(location, board, [(x, y) for x in [1, -1, 0] for y in [1, -1, 0]])
 
 
-def move_all_directions(location: tuple, board: list, dirs: list) -> set:
-    moves_set: set = set()
+def move_all_directions(location: Coordinates, board: BoardList, dirs: List[tuple]) -> Set[Coordinates]:
+    moves_set: Set[Coordinates] = set()
     for d in dirs:
         allowed: bool = True
-        pos: tuple = add_tuples(d, location)
+        pos: Coordinates = add_tuples(d, location)
         while allowed:
             check = valid(board, pos, get_own_pieces(location, board))
             if check[0]:
@@ -90,20 +87,19 @@ def move_all_directions(location: tuple, board: list, dirs: list) -> set:
     return moves_set
 
 
-def get_own_pieces(location: tuple, board: set) -> set:
+def get_own_pieces(location: Coordinates, board: BoardList) -> FrozenSet[str]:
     if board[location[0]][location[1]] in WHITE_PIECES:
         return WHITE_PIECES
     else:
         return BLACK_PIECES
 
 
-def valid(board: set, pos: tuple, bad_pieces: set):
+def valid(board: BoardList, pos: Coordinates, bad_pieces: FrozenSet[str]) -> Tuple[bool, Optional[List]]:
     if 0 <= pos[0] < 8 and 0 <= pos[1] < 8:
         if (board[pos[0]][pos[1]] is None) or (board[pos[0]][pos[1]] not in bad_pieces):
             return True, board[pos[0]][pos[1]]
     return False, None
 
 
-def add_tuples(a: tuple, b: tuple) -> tuple:
+def add_tuples(a: Tuple[int, int], b: Tuple[int, int]) -> Tuple[int, ...]:
     return tuple([sum(x) for x in zip(a, b)])
-

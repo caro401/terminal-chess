@@ -69,5 +69,29 @@ class TestKnightMoves(unittest.TestCase):
         self.assertEqual(self.test_board.get_valid_moves(2, 7), {(0, 6), (1, 5), (3, 5), (4, 6)})
 
 
+class TestBishopMoves(unittest.TestCase):
+    def setUp(self):
+        self.test_board = chess.Board(False)
+        self.test_board.board = [[WR, None, None, WQ, WK, WB, None, WR], [WP, WP, WP, WP, None, None, WP, WP],
+                                 [None, None, BP, None, None, WP, None, WN],
+                                 [None, None, WN, None, None, BN, None, None],
+                                 [WB, None, None, BB, WP, None, BP, None],
+                                 [None, None, None, BP, None, None, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, BQ, BK, None, None, BR]]
+        # print(self.test_board.render_board())
+
+    def test_black_bishop_initial(self):
+        self.assertEqual(self.test_board.get_valid_moves(7, 2), {(6, 3), (5, 4), (4, 5), (3, 6), (2, 7)})
+
+    def test_white_bishop_initial(self):
+        self.assertEqual(self.test_board.get_valid_moves(0, 5), {(1, 4), (2, 3)})
+
+    def test_white_bishop(self):
+        self.assertEqual(self.test_board.get_valid_moves(4, 0), {(5, 1), (6, 2), (7, 3), (3, 1), (2, 2)})
+
+    def test_black_bishop(self):
+        self.assertEqual(self.test_board.get_valid_moves(4, 3), {(5, 2), (5, 4), (3, 2), (3, 4), (2, 5)})
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -41,23 +41,17 @@ def black_pawn_move(location: Coordinates, board: BoardList) -> Set[Coordinates]
 
 
 def knight_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
-    moves_set: Set[Coordinates] = set()
-    own_pieces: Set[str] = get_own_pieces(location, board)
-    for i in ((1, 2), (2, 1)):
-        for j in [(x * i[0], y * i[1]) for x in [1, -1] for y in [1, -1]]:
-            pos: tuple = add_tuples(j, location)
-            if valid(board, pos, own_pieces)[0]:
-                moves_set.add(pos)
-    return moves_set
+    return move_all_directions_limited(location, board,
+                        [(x * i[0], y * i[1]) for x in [1, -1] for y in [1, -1] for i in ((1, 2), (2, 1))])
 
 
 def rook_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO castling
-    return move_all_directions(location, board, [(1, 0), (-1, 0), (0, 1), (0, -1)])
+    return move_all_directions_edge(location, board, [(1, 0), (-1, 0), (0, 1), (0, -1)])
 
 
 def bishop_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
-    return move_all_directions(location, board, [(x, y) for x in [1, -1] for y in [1, -1]])
+    return move_all_directions_edge(location, board, [(x, y) for x in [1, -1] for y in [1, -1]])
 
 
 def queen_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
@@ -67,10 +61,10 @@ def queen_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
 def king_move(location: Coordinates, board: BoardList) -> Set[Coordinates]:
     # TODO check
     # TODO castling
-    return move_all_directions(location, board, [(x, y) for x in [1, -1, 0] for y in [1, -1, 0]])
+    return move_all_directions_limited(location, board, [(x, y) for x in [1, -1, 0] for y in [1, -1, 0]])
 
 
-def move_all_directions(location: Coordinates, board: BoardList, dirs: List[tuple]) -> Set[Coordinates]:
+def move_all_directions_edge(location: Coordinates, board: BoardList, dirs: List[tuple]) -> Set[Coordinates]:
     moves_set: Set[Coordinates] = set()
     for d in dirs:
         allowed: bool = True
@@ -84,6 +78,16 @@ def move_all_directions(location: Coordinates, board: BoardList, dirs: List[tupl
             else:
                 allowed = False
             pos = add_tuples(d, pos)
+    return moves_set
+
+
+def move_all_directions_limited(location: Coordinates, board: BoardList, dirs: List[tuple]) -> Set[Coordinates]:
+    moves_set: Set[Coordinates] = set()
+    own_pieces: Set[str] = get_own_pieces(location, board)
+    for d in dirs:
+        pos: tuple = add_tuples(d, location)
+        if valid(board, pos, own_pieces)[0]:
+            moves_set.add(pos)
     return moves_set
 
 

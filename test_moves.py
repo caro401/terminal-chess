@@ -133,5 +133,43 @@ class TestQueenMoves(unittest.TestCase):
                           (3, 6), (3, 7), (2, 4), (1, 5), (0, 6), (2, 3), (2, 2)})
 
 
+class TestKingMoves(unittest.TestCase):
+    def setUp(self):
+        self.test_board = chess.Board(False)
+        self.test_board.board = [[WR, None, None, None, WK, WB, None, WR], [None, WP, WP, WP, None, None, WP, WP],
+                                 [BN, None, BP, None, None, WP, None, WN],
+                                 [WP, None, WN, WQ, None, None, None, None],
+                                 [WB, None, None, None, WP, None, BP, None],
+                                 [None, None, BQ, BP, None, None, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, None, BK, BB, None, BR]]
+        print(self.test_board.render_board())
+
+    def test_black_king_safe(self):
+        self.assertEqual(self.test_board.get_valid_moves(7, 4), {(7, 3), (6, 3)})
+
+    def test_white_king_safe(self):
+        self.assertEqual(self.test_board.get_valid_moves(0, 4), {(0, 3), (1, 4), (1, 5)})
+
+    @unittest.expectedFailure
+    def test_white_king_check(self):
+        self.test_board.board = [[WR, None, None, None, WK, WB, None, WR], [None, WP, WP, WP, None, None, WP, WP],
+                                 [BN, None, BP, None, None, WP, None, WN],
+                                 [WP, None, WN, WQ, BR, None, None, None],
+                                 [WB, None, None, None, WP, None, BP, None],
+                                 [None, None, BQ, BP, None, None, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, None, BK, BB, None, None]]
+        self.assertEqual(self.test_board.get_valid_moves(0, 4), {(0, 3), (1, 5)})
+
+    @unittest.expectedFailure
+    def test_black_king_threat(self):
+        self.test_board.board = [[WR, None, None, None, WK, WB, None, WR], [None, WP, WP, WP, None, None, WP, WP],
+                                 [BN, None, BP, None, None, WP, None, WN],
+                                 [WP, None, WN, WQ, None, None, None, None],
+                                 [None, None, None, None, WP, None, BP, None],
+                                 [None, None, BQ, BP, None, WB, None, None],
+                                 [BP, BP, None, None, BP, BP, None, BP], [BR, BN, BB, None, BK, BB, None, BR]]
+        self.assertEqual(self.test_board.get_valid_moves(7, 4), {(7, 3)})
+
+
 if __name__ == '__main__':
     unittest.main()

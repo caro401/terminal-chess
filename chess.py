@@ -45,7 +45,7 @@ class ChessGame:
                 if self.white_move and (self.board.board_list[origin[0]][origin[1]] not in WHITE_PIECES):
                     print("White move, you can't move that piece")
                 elif (not self.white_move) and (self.board.board_list[origin[0]][origin[1]] not in BLACK_PIECES):
-                    print("White move, you can't move that piece")
+                    print("Black move, you can't move that piece")
                 else:
                     valid_moves: Set[Coordinates] = self.board.get_valid_moves(origin[0], origin[1])
                     if target in valid_moves:

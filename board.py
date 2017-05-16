@@ -93,10 +93,7 @@ class Board:
         return moves_set
 
     def get_own_pieces(self, location: Coordinates) -> FrozenSet[str]:
-        if self.board_list[location[0]][location[1]] in WHITE_PIECES:
-            return WHITE_PIECES
-        else:
-            return BLACK_PIECES
+        return WHITE_PIECES if self.board_list[location[0]][location[1]] in WHITE_PIECES else BLACK_PIECES
 
     def valid(self, pos: Coordinates, bad_pieces: FrozenSet[str]) -> Tuple[bool, Optional[List]]:
         if 0 <= pos[0] < 8 and 0 <= pos[1] < 8:

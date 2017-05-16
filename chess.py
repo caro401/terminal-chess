@@ -13,9 +13,12 @@ class ChessGame:
 
     def display_valid_moves(self, row: int, col: int) -> None:
         # hint what moves the piece can make
-        moves_set: Set[Coordinates] = self.board.get_valid_moves(row, col)
+        self.display_coordinates(self.board.get_valid_moves(row, col))
+
+    def display_coordinates(self, coords: Set[Coordinates]) -> None:
+        # print the board with a set of coordinates marked as x
         show: BoardList = deepcopy(self.board.board_list)
-        for location in moves_set:
+        for location in coords:
             show[location[0]][location[1]] = 'x'
         print(self.render_board(show))
 

@@ -36,6 +36,7 @@ _ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n_ _ _ _ _ _ _ _ \n\
         self.assertEqual(self.game.parse_move('a3 a4'), ((2, 0), (3, 0)))
         self.assertEqual(self.game.parse_move('f2 e4'), ((1, 5), (3, 4)))
 
+    # TODO test turn taking
 
 if __name__ == '__main__':
     unittest.main()

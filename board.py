@@ -53,7 +53,17 @@ class Board:
     def king_move(self, location: Coordinates) -> Set[Coordinates]:
         # TODO check
         # TODO castling
-        return self.move_all_directions_limited(location, [(x, y) for x in [1, -1, 0] for y in [1, -1, 0]])
+        enemy_pieces: FrozenSet[str] = BLACK_PIECES if self.board_list[location[0]][location[1]] in WHITE_PIECES \
+            else WHITE_PIECES
+        potential_moves: Set[Coordinates] = \
+            self.move_all_directions_limited(location, [(x, y) for x in [1, -1, 0] for y in [1, -1, 0]])
+        good_moves: Set[Coordinates] = set()
+        for move in potential_moves:
+            if not self.check_for_check(move, enemy_pieces):
+                good_moves.add(move)
+            else:
+                print('check!')
+        return good_moves
 
     def move_all_directions_edge(self, location: Coordinates, dirs: List[tuple]) -> Set[Coordinates]:
         # for rook, bishop, queen - moves can extend to edge of board
@@ -93,7 +103,20 @@ class Board:
             if (self.board_list[pos[0]][pos[1]] is None) or (self.board_list[pos[0]][pos[1]] not in bad_pieces):
                 return True, self.board_list[pos[0]][pos[1]]
         return False, None
-    
+
+    def check_for_check(self, king_pos: Coordinates, bad_pieces: FrozenSet[str]) -> bool:
+        next_moves: Set[Coordinates] = set()
+        for i in range(8):
+            for j in range(8):
+                current_sq = self.board_list[i][j]
+                if current_sq in (BK, WK):
+                    continue
+                if self.board_list[i][j] in bad_pieces:
+                    next_moves = next_moves.union(self.get_valid_moves(i, j))
+                    if king_pos in next_moves:
+                        return True
+        return False
+
     @staticmethod
     def add_tuples(a: Tuple[int, int], b: Tuple[int, ...]) -> Tuple[int, ...]:
         return tuple([sum(x) for x in zip(a, b)])

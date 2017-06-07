@@ -45,9 +45,6 @@ class Board:
         opposing_pieces: FrozenSet[str] = self.get_enemy_pieces((row, col))
         opposing_locations: Set[Coordinates] \
             = self.find_pieces(opposing_pieces - set([WK, BK]))
-        king_pos: Coordinates = self.find_king(WK if
-                                               opposing_pieces == BLACK_PIECES
-                                               else BK)
         allowed_moves = set()
         for move in potential_moves:
             self.make_temp_move((row, col), move)
@@ -59,11 +56,8 @@ class Board:
             for piece_loc in opposing_locations:
                 opposing_moves.update(self.moves_map[
                     self.current_board[piece_loc[0]][piece_loc[1]]](piece_loc))
-            print("opposing", opposing_moves)
-            print("king", king_pos)
             if king_pos not in opposing_moves:
                 allowed_moves.add(move)
-            print("allowed", allowed_moves)
         self.current_board: BoardList = deepcopy(self.board_list)
         return allowed_moves
 
